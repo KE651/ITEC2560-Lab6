@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Longest US Bridges Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.1/dist/leaflet.css"
+        integrity="sha256-sA+zWATbFveLLNqWO2gtiw3HL/lh1giY/Inf1BJ0z14="
+        crossorigin=""/>
+  <!-- Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.9.1/dist/leaflet.js"
+          integrity="sha256-NDI0K41gVbWqfkkaHj15IzU7PtMoelkzyKp8TOaFQ3s="
+          crossorigin=""></script>
+  <style> #map { height: 400px; width: 800px } </style>
+</head>
+<body>
+<div id="map"></div>
+
+
+<script>
+    let bridges=[
+        {"name": "Verrazano-Narrows Bridge",
+         "city":"New York, NY",
+          "span": 1298.4,
+          "span_text" : "1298.4m",
+          "location": [40.6066, -74.0447]},
+        {"name": "Golden Gate Bridge",
+            "city":"San Francisco and Marin, CA",
+            "span": 1280.2,
+            "span_text" : "1280.2m",
+            "location": [37.8199, -122.4783]},
+        {"name": "Mackinac Bridge",
+            "city":"Mackinaw and St. Ignace, MI",
+            "span": 1158.0,
+            "span_text" : "1158.0m",
+            "location": [45.8174, -84.7278]},
+        {"name": "George Washington Bridge",
+            "city":"New York, NY and New Jersey, NJ",
+            "span": 1067.0,
+            "span_text" : "1067.0m",
+            "location": [40.8517, -73.9527]},
+        {"name": "Tacoma Narrows Bridge",
+            "city":"Tacoma and Kitsap, WA",
+            "span": 853.44,
+            "span_text" : "853.44m",
+            "location": [47.2690, -122.5517]}
+    ] //end array of objects
+// center of the U.S.: 37.0902° N, 95.7129° W
+    let map = L.map('map').setView([37.0902, -95.7129], 4)
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+    }).addTo(map)
+
+    const markerBridge = L.icon({
+        iconUrl: 'icons8-bridge-64.png',
+        iconSize: [20, 30],
+        iconAnchor: [10, 15],
+        popupAnchor: [0, 0]
+    })
+
+    const markerLongestBridge = L.icon({
+        iconUrl:'icons8-bridge-48.png',
+        iconSize:[40, 40],
+        iconAnchor: [10, 15],
+        popupAnchor: [0,0]
+    })
+  // https://leafletjs.com/examples/custom-icons/
+
+// Bridge icons by Icons8  https://icons8.com/icons/set/bridge
+// had to use downloaded files rather than URL due to Chrome CORB block
+
+    let maxSpan = 0
+    let longestBridge = ""
+
+  // determine which bridge is the longest and store result
+    bridges.forEach(bridge=>{
+        if (bridge.span >= maxSpan) {
+            maxSpan = bridge.span
+            longestBridge=bridge.name
+            // console.log(longestBridge)
+        }
+    })
+
+    // loop through bridges and draw markers with popups on map
+    // use a different icon for the longest bridge
+    bridges.forEach(bridge=> {
+        // console.log(bridge.name)
+        let popUpText=`<strong>${bridge.name}</strong>,<br> span ${bridge.span}m`
+        let latitude=bridge.location[0]
+        let longitude=bridge.location[1]
+        // console.log(popUpText)
+        if (bridge.name === longestBridge) {
+            L.marker([latitude, longitude], {icon:markerLongestBridge}).bindPopup(popUpText).addTo(map)
+        }
+        else {
+            L.marker([latitude, longitude], {icon: markerBridge}).bindPopup(popUpText).addTo(map)
+        }
+        // bindPopup(popUpText).addTo(map)
+        //create marker for latitude and longitude
+        //create pop-up with name and span
+    }) //end forEach
+
+</script>
+</body>
+</html>

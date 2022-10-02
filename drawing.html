@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Mouse Events</title>
+
+  <style>
+
+    #canvas {
+      border: 1px black solid;
+    }
+
+  </style>
+</head>
+<body>
+
+<label for="color1">Select color:</label>
+<input type="color" id="color1" name="color1">
+<br>
+<label for="radius">Select the size of the drawing pen.</label>
+<input type="range" id="radius" name="radius" min=".002" max="100">
+<!-- w3schools.com/html/html_form_input_types.asp -->
+<br><br>
+<button id="clear_button" onclick="clearCanvas()">Clear Canvas</button>
+
+<P>Drag the mouse on the canvas</P>
+<canvas id="canvas" height="400" width="400"></canvas>
+
+<script>
+  let colorInput=document.querySelector("#color1")
+ // console.log("color="+colorInput.value)
+  let sizeInput=document.querySelector("#radius")
+ // console.log("size="+sizeInput.value)
+  let canvas = document.querySelector('#canvas')
+  let context = canvas.getContext('2d')
+
+  function clearCanvas(){
+    let c =document.getElementById("canvas")
+    let cc=c.getContext("2d")
+    cc.clearRect(0,0,400,400)
+    cc.beginPath()
+  } //stackoverflow.com/questions/42042733/javascript-clear-canvas
+  
+  // Keep track of whether the mouse button has been pressed down or not.
+  // Think of this as whether the user is drawing or not, is their brush on the canvas?
+  let mousedown = false 
+
+  canvas.addEventListener('mousedown', function() {
+    mousedown = true
+  })
+
+  canvas.addEventListener('mouseup', function() {
+    mousedown = false 
+  })
+
+  // If mouse leaves the canvas then stop drawing
+  canvas.addEventListener('mouseout', function() {
+    mousedown = false
+  })
+
+  canvas.addEventListener('mousemove', function() {
+    // If the mouse button is not pressed down, do not draw.
+    if (!mousedown) { return }
+
+    // event is a built-in variable, contains the event that triggered this function
+    // get the x, y location of the event
+    let x = event.offsetX
+    let y = event.offsetY   //offsetX, offsetY, may not work in older browsers
+// console.log(x,y)
+    //Draw a filled rectangle centered under the mouse click
+    //x, y is the top left corner, so shift up and left by 5 to center it under the mouse.
+    context.beginPath()
+    context.arc(x, y, sizeInput.value/10, 0, 6.2)
+    context.fillStyle=colorInput.value
+    context.fill()
+    // context.stroke() could use this along with context.strokeStyle to have different border color
+
+  })
+
+</script>
+
+</body>
+</html>
